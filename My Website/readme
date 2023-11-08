@@ -1,3 +1,7 @@
+# Website
+This program is a website that contains a page that solves for the area of a tringle and circle along with the profile of the creator. This website also allows you to convert a series of strings into it uppercase for.
+
+## To run this program
 1. install python if you haven't install yet
 1.1 go to your working dir 
 2. install flask
