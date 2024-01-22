@@ -1,38 +1,8 @@
 from flask import Flask, render_template, request, jsonify
+from merge_linked_lists import merge_sorted_lists, print_linked_list, create_linked_list
 import math
 
 app = Flask(__name__)
-
-class ListNode:
-    def __init__(self, value=0, next=None):
-        self.value = value
-        self.next = next
-
-def merge_sorted_lists(list1, list2):
-    # dummy node to serve as head of merge list
-    dummy = ListNode()
-    current = dummy
-	
-	# Check both lists and compare the values
-    while list1 is not None and list2 is not None:
-        if list1.value <= list2.value:
-            current.next = list1
-            list1 = list1.next
-        else:
-            current.next = list2
-            list2 = list2.next
-
-  		# move to the current node
-        current = current.next
-
-	# If any of the list gets completely empty
-    # directly join all the elements of the other list
-    if list1 is None:
-        current.next = list2
-    elif list2 is None:
-        current.next = list1
-
-    return dummy.next
 
 @app.route('/')
 def index():
@@ -58,39 +28,33 @@ def works():
 def contact():
     return render_template('contact.html')
 
-@app.route('/mergeLinkedLists')
-def merge_lists_endpoint():
-    data = request.get_json(force=True)
-    print(data)
+@app.route('/mergeLinkedLists', methods=['GET', 'POST'])
+def merge():
+    result_values = None
+    error = None
+    list1 = None
+    list2 = None
 
-    # Assuming data contains two lists in the format {'list1': [1, 3, 5], 'list2': [2, 4, 6]}
-    list1_values = data.get('list1', [])
-    list2_values = data.get('list2', [])
+    if request.method == 'POST':
+        try:
+            size1 = int(request.form.get('size1', 0))
+            values1 = [val.strip() for val in request.form.get('values1', '').split(',')]
+            if size1 != len(values1):
+                raise ValueError("Size should be equal to the number of values for Linked List 1.")
+            list1 = create_linked_list(size1, values1)
 
-    # Convert input lists to linked lists
-    list1 = ListNode()
-    current1 = list1
-    for value in list1_values:
-        current1.next = ListNode(value)
-        current1 = current1.next
+            size2 = int(request.form.get('size2', 0))
+            values2 = [val.strip() for val in request.form.get('values2', '').split(',')]
+            if size2 != len(values2):
+                raise ValueError("Size should be equal to the number of values for Linked List 2.")
+            list2 = create_linked_list(size2, values2)
 
-    list2 = ListNode()
-    current2 = list2
-    for value in list2_values:
-        current2.next = ListNode(value)
-        current2 = current2.next
+            result_values = merge_sorted_lists(list1, list2)
 
-    # Merge the linked lists
-    merged_list = merge_sorted_lists(list1.next, list2.next)
+        except ValueError as e:
+            error = str(e)
 
-    # Convert the merged list back to a Python list
-    result = []
-    current = merged_list
-    while current:
-        result.append(current.value)
-        current = current.next
-
-    return jsonify({'merged_list': result})
+    return render_template('mergelinkedlists.html', result_values=result_values, error=error, print_linked_list=print_linked_list, list1=list1, list2=list2)
 
 @app.route('/areaOfcircle', methods=['GET', 'POST'])
 def areaOfCircle():

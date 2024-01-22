@@ -8,34 +8,6 @@
 
     <link rel="stylesheet" href="{{url_for('static', filename='css/style.css') }}">
 
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <script>
-        function mergeLists() {
-            var list1 = $('#inputList1').val();
-            var list2 = $('#inputList2').val();
-
-            // Create a JSON object with the input data
-            var data = {
-                'list1': list1.split(',').map(Number),
-                'list2': list2.split(',').map(Number)
-            };
-
-            // Send a POST request to the Flask endpoint
-            $.ajax({
-                type: 'POST',
-                url: '/mergeLinkedLists',
-                contentType: 'application/json;charset=UTF-8',
-                data: JSON.stringify(data),
-                success: function(response) {
-                    // Display the merged list result
-                    $('#result').html('Merged List: ' + response.merged_list.join(', '));
-                },
-                error: function(error) {
-                    console.error('Error:', error);
-                }
-            });
-        }
-    </script>
 </head>
 <body class="touppercase" id="wrapper">
 
@@ -49,19 +21,55 @@
         </ul>
     </div>
 
-    <h1>Merge Linked Lists</h1>
+    <div class="content-container">
+        <h1><span>M</span>erge <span>T</span>wo <span>L</span>inked <span>L</span>ists</h1>
+    </div>
 
-    <div>
-        <form id="mergeForm">
-            <label for="inputList1">Enter List 1:</label>
-            <input type="text" id="inputList1" name="inputList1">
+    
+    <div class="container">
+        <form method="post" action="/mergeLinkedLists">
+            <div class="input-container">
+                <label class="list1label" for="size1">Linked List 1 size (0 to 50):</label>
+                <div class="body input">
+                    <input type="number" id="size1" name="size1" placeholder="Enter size" min="0" max="50" required>
+                </div>
 
-            <label for="inputList2">Enter List 2:</label>
-            <input type="text" id="inputList2" name="inputList2">
+                <label class="values1" for="values1">Values for Linked List 1 (-100 to 100, separated by commas):</label>
+                <div class="body input">
+                    <input type="text" id="values1" name="values1" placeholder="Enter values" required>
+                </div>
+            </div>
 
-            <input type="button" value="Merge Lists" onclick="mergeLists()">
+            <div class="input-container">
+                <label class="list2label" for="size2"> Linked List 2 size (0 to 50):</label>
+                <div class="body input">
+                    <input type="number" id="size2" name="size2" placeholder="Enter size" min="0" max="50" required>
+                </div>
+
+                <label class="values2" for="values2">Values for Linked List 2 (-100 to 100, separated by commas):</label>
+                <div class="body input">
+                    <input type="text" id="values2" name="values2" placeholder="Enter values" required>
+                </div>
+            </div>
+
+            <div class="body input" style="grid-column: span 2;">
+                <input type="submit" value="Merge Lists">
+            </div>
         </form>
     </div>
+    <div class="listResult">
+        {% if result_values %}
+            <p><strong>Linked List 1:</strong><br>{{ print_linked_list(list1) }}</p>
+            <p><strong>Linked List 2:</strong><br>{{ print_linked_list(list2) }}</p>
+            <p><strong>Merged List:</strong><br>{{ print_linked_list(result_values) }}</p>
+        {% elif error %}
+            <p><strong>Error:</strong> {{ error }}</p>
+        {% else %}
+            <p><strong>Waiting for input...</strong></p>
+        {% endif %}
+    </div>
+</body>
+</html>
 
 </body>
 </html>
