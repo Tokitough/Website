@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Merge Linked Lists</title>
+    <link href="https://fonts.cdnfonts.com/css/valorant" rel="stylesheet">
+    <link href="https://fonts.cdnfonts.com/css/sf-juggernaut-condensed" rel="stylesheet">
+    <link href="https://fonts.cdnfonts.com/css/lato" rel="stylesheet">
+
+    <link rel="stylesheet" href="{{url_for('static', filename='css/style.css') }}">
+
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script>
+        function mergeLists() {
+            var list1 = $('#inputList1').val();
+            var list2 = $('#inputList2').val();
+
+            // Create a JSON object with the input data
+            var data = {
+                'list1': list1.split(',').map(Number),
+                'list2': list2.split(',').map(Number)
+            };
+
+            // Send a POST request to the Flask endpoint
+            $.ajax({
+                type: 'POST',
+                url: '/mergeLinkedLists',
+                contentType: 'application/json;charset=UTF-8',
+                data: JSON.stringify(data),
+                success: function(response) {
+                    // Display the merged list result
+                    $('#result').html('Merged List: ' + response.merged_list.join(', '));
+                },
+                error: function(error) {
+                    console.error('Error:', error);
+                }
+            });
+        }
+    </script>
+</head>
+<body class="touppercase" id="wrapper">
+
+    <div>
+        <ul>
+            <li><a class="active" href="/">Home</a></li>
+            <li><a href="/toUpperCase">Uppercase</a></li>
+            <li><a href="/areaOfcircle">Circle</a></li>
+            <li><a href="/areaOfTriangle">Triangle</a></li>
+            <li><a href="/mergeLinkedLists">Linked List</a></li>
+        </ul>
+    </div>
+
+    <h1>Merge Linked Lists</h1>
+
+    <div>
+        <form id="mergeForm">
+            <label for="inputList1">Enter List 1:</label>
+            <input type="text" id="inputList1" name="inputList1">
+
+            <label for="inputList2">Enter List 2:</label>
+            <input type="text" id="inputList2" name="inputList2">
+
+            <input type="button" value="Merge Lists" onclick="mergeLists()">
+        </form>
+    </div>
+
+</body>
+</html>
+
